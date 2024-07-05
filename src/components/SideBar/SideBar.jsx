@@ -9,7 +9,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className={showMenu ? "bg-[#E8EFCF] p-2" : "p-2"}>
+    <div className={showMenu ? "bg-[#E8EFCF] p-2 min-[500px]:min-h-screen" : "p-2 min-[500px]:min-h-screen"}>
       <div
         onClick={handleMenuClick}
         className="bg-[#C6EBC5] text-xl w-9 p-2 rounded-md cursor-pointer"

@@ -61,9 +61,9 @@ function App() {
   };
 
   return (
-    <div className="min-[500px]:flex xl:text-xl p-1">
+    <div className="min-[500px]:flex xl:text-xl px-1">
       <SideBar />
-      <div className="py-5 md:mx-10 md:w-[100%]">
+      <div className="py-5 md:mx-10 mx-5 md:w-[100%]">
         <AddNewEmail
           addEmail={addEmail}
           editMode={editMode}

@@ -3,7 +3,7 @@ import EmailItem from "./EmailItem.jsx";
 
 const EmailList = ({ emails, deleteEmail, editEmail }) => {
   return (
-    <div className="my-5">
+    <div className="my-5 mx-1">
       <h1 className="font-bold text-xl">Email List</h1>
       <ul>
         {emails.map((email) => (
