@@ -1,23 +1,72 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import SideBar from "./components/SideBar/SideBar.jsx";
+import AddNewEmail from "./components/AddNewEmail/AddNewEmail.jsx";
+import EmailList from "./components/EmailList/EmailList.jsx";
 
 function App() {
+  const [emails, setEmails] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [selectedEmailId, setSelectedEmailId] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const storedEmails = localStorage.getItem("emails");
+    if (storedEmails) {
+      setEmails(JSON.parse(storedEmails));
+    }
+    setIsInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem("emails", JSON.stringify(emails));
+    }
+  }, [emails, isInitialized]);
+
+  const addEmail = (data) => {
+    setEmails([...emails, { ...data, id: emails.length + 1 }]);
+  };
+
+  const updateEmail = (data) => {
+    const updatedEmails = emails.map((email) =>
+      email.id === selectedEmailId ? { ...email, ...data } : email
+    );
+    setEmails(updatedEmails);
+    setEditMode(false);  // Turn off edit mode
+    setEditData(null);  // Reset edit data
+    setSelectedEmailId(null);
+  };
+
+  const deleteEmail = (id) => {
+    const updatedEmails = emails.filter((email) => email.id !== id);
+    setEmails(updatedEmails);
+  };
+
+  const editEmail = (id) => {
+    const emailToEdit = emails.find((email) => email.id === id);
+    setEditMode(true);
+    setEditData(emailToEdit);
+    setSelectedEmailId(id);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-[500px]:flex xl:text-xl">
+      <SideBar />
+      <div className="py-5 md:mx-10 md:w-[100%]">
+        <AddNewEmail
+          addEmail={addEmail}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          initialData={editData}
+          updateEmail={updateEmail}
+        />
+        <EmailList
+          emails={emails}
+          deleteEmail={deleteEmail}
+          editEmail={editEmail}
+        />
+      </div>
     </div>
   );
 }
