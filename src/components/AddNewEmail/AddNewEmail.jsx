@@ -1,7 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const AddNewEmail = ({ addEmail, editMode, initialData, updateEmail, setEditMode }) => {
+const AddNewEmail = ({
+  addEmail,
+  editMode,
+  initialData,
+  updateEmail,
+  setEditMode,
+  emails,
+}) => {
   const {
     register,
     handleSubmit,
@@ -9,29 +16,48 @@ const AddNewEmail = ({ addEmail, editMode, initialData, updateEmail, setEditMode
     reset,
   } = useForm();
 
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({ email: "", name: "" });
+
   useEffect(() => {
     if (editMode && initialData) {
-      reset(initialData);
+      setFormData(initialData);
     } else {
-      reset();
+      setFormData({ email: "", name: "" });
     }
-  }, [editMode, initialData, reset]);
+  }, [editMode, initialData]);
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = async (data) => {
+    const isDuplicate = checkForDuplicates(data);
+    if (isDuplicate) {
+      setFormData({ email: "", name: "" });
+      setError("Duplicate email or name detected!");
+      return;
+    } else {
+      setError(null);
+    }
+
     if (editMode) {
       updateEmail(data);
       setEditMode(false);
     } else {
       addEmail(data);
     }
-    reset();
+    resetForm();
   };
 
-  useEffect(() => {
-    if (!editMode) {
-      reset({ email: "", name: "" });
-    }
-  }, [editMode, reset]);
+  const resetForm = () => {
+    reset();
+    setFormData({ email: "", name: "" });
+  };
+
+  const checkForDuplicates = (newData) => {
+    const duplicateEmail = emails.some(
+      (email) => email.email === newData.email
+    );
+    const duplicateName = emails.some((email) => email.name === newData.name);
+    return duplicateEmail || duplicateName;
+  };
 
   return (
     <div className="m-2">
@@ -51,6 +77,8 @@ const AddNewEmail = ({ addEmail, editMode, initialData, updateEmail, setEditMode
               message: "Invalid email address",
             },
           })}
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
         {errors.email && <p className="text-red-700">{errors.email.message}</p>}
         <input
@@ -58,6 +86,8 @@ const AddNewEmail = ({ addEmail, editMode, initialData, updateEmail, setEditMode
           type="text"
           placeholder="name..."
           {...register("name", { required: "Please enter your name" })}
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
         {errors.name && <p className="text-red-700">{errors.name.message}</p>}
         <input
@@ -65,6 +95,7 @@ const AddNewEmail = ({ addEmail, editMode, initialData, updateEmail, setEditMode
           type="submit"
           value={editMode ? "Save Changes" : "Save"}
         />
+        {error && <p className="text-red-700">{error}</p>}
       </form>
     </div>
   );

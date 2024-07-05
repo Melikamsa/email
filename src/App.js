@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "./components/SideBar/SideBar.jsx";
 import AddNewEmail from "./components/AddNewEmail/AddNewEmail.jsx";
 import EmailList from "./components/EmailList/EmailList.jsx";
@@ -33,8 +33,8 @@ function App() {
       email.id === selectedEmailId ? { ...email, ...data } : email
     );
     setEmails(updatedEmails);
-    setEditMode(false);  // Turn off edit mode
-    setEditData(null);  // Reset edit data
+    setEditMode(false); 
+    setEditData(null); 
     setSelectedEmailId(null);
   };
 
@@ -70,6 +70,7 @@ function App() {
           setEditMode={setEditMode}
           initialData={editData}
           updateEmail={updateEmail}
+          emails={emails} 
         />
         <EmailList
           emails={emails}
