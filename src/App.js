@@ -41,17 +41,27 @@ function App() {
   const deleteEmail = (id) => {
     const updatedEmails = emails.filter((email) => email.id !== id);
     setEmails(updatedEmails);
+    cancelEdit();
   };
 
   const editEmail = (id) => {
     const emailToEdit = emails.find((email) => email.id === id);
+    if (selectedEmailId !== id) {
+      cancelEdit();
+    }
     setEditMode(true);
     setEditData(emailToEdit);
     setSelectedEmailId(id);
   };
 
+  const cancelEdit = () => {
+    setEditMode(false);
+    setEditData(null);
+    setSelectedEmailId(null);
+  };
+
   return (
-    <div className="min-[500px]:flex xl:text-xl">
+    <div className="min-[500px]:flex xl:text-xl p-1">
       <SideBar />
       <div className="py-5 md:mx-10 md:w-[100%]">
         <AddNewEmail

@@ -7,7 +7,6 @@ const AddNewEmail = ({ addEmail, editMode, initialData, updateEmail, setEditMode
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm();
 
   useEffect(() => {
